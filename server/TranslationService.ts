@@ -1,3 +1,8 @@
 export default interface TranslationService {
-  translate: (keywords: string) => Promise<string>;
+  translateKeywords: (keywords: string) => Promise<string>;
+  translateSummary: (
+    summary: string,
+    source_lang?: string,
+    target_lang?: string
+  ) => Promise<string>;
 }

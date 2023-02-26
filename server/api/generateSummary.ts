@@ -9,11 +9,18 @@ export default defineEventHandler(async (event) => {
   const translator: TranslationService = AppConfig.translationService;
   const generator: GenerationService = AppConfig.generationService;
   try {
-    const translation = await translator.translate(keywords);
+    const translation = await translator.translateKeywords(keywords);
     console.log(translation);
-    const summary = await generator.generate(translation);
-    console.log(summary);
-    return summary;
+    const englishSummary = await generator.generate(translation);
+    console.log(englishSummary);
+    const finnishSummary = await translator.translateSummary(englishSummary);
+    console.log(finnishSummary);
+    const finalSummary = await translator.translateSummary(
+      finnishSummary,
+      "FI",
+      "ET"
+    );
+    return finalSummary;
   } catch (error) {
     console.log(error);
     throw createError({
