@@ -20,17 +20,34 @@
         v-model="outputLanguage"
       ></v-select>
     </v-container>
-    <v-textarea
-      v-model="wordList"
-      autogrow="true"
-      bg-color="rgba(220, 220, 220)"
-      label="Sisesta märksõna või fraas ja valjuta enter"
-      variant="solo"
-      class="w-100 px-4 h-50"
-    ></v-textarea>
+    <v-container class="w-100 px-4">
+      <v-textarea
+        v-model="wordList"
+        @keydown.enter.prevent="addChip"
+        auto-grow
+        rows="1"
+        bg-color="rgba(220, 220, 220)"
+        label="Sisesta märksõna või fraas ja valjuta enter"
+        variant="solo"
+        class="h-25"
+      ></v-textarea>
+    </v-container>
+    <v-container class="w-100 px-4 py-0">
+      <v-chip
+        closable
+        v-for="(chip, index) in chips"
+        :key="index"
+        label
+        outlined
+        class="rounded-pill mr-2 mb-2"
+        color="white"
+        >{{ chip }}</v-chip
+      >
+    </v-container>
     <v-checkbox
       label="Lisa taaspöördumise meeldetuletus"
       class="text-white align-self-start px-1 py-0"
+      v-model="disclaimer"
     ></v-checkbox>
     <v-btn
       color="#405c99"
@@ -42,25 +59,12 @@
 </template>
 
 <script setup>
-const wordList = ref(`Mees
-68-aastane
-kõhuvalu
-2 nädalat
-vasakul alakõhus
-pimesool opereeritud 10 aastat tagasi
-võtnud paratsetamooli
-hommikul hullem
-ei ole oksendanud
-on kõhulahtisus
-varem sellist kõhuvalu pole olnud
-palpatsioonil valu alakõhus
-alkoholi ei tarbi
-suitsetaja
-võtnud ibuprofeeni`);
+const wordList = ref("");
 
 const inputLanguage = ref("Eesti");
 const outputLanguage = ref("Eesti");
 const disclaimer = ref(false);
+const chips = ref([]);
 
 const printer = async () => {
   const summary = await $fetch("/api/generateSummary", {
@@ -68,6 +72,12 @@ const printer = async () => {
     body: JSON.stringify(wordList.value),
   });
   wordList.value = summary.trim();
+};
+
+const addChip = () => {
+  if (wordList.value === "") return;
+  chips.value.push(wordList.value);
+  wordList.value = "";
 };
 </script>
 
