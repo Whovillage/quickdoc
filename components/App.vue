@@ -1,11 +1,17 @@
 import { KeywordForm } from '~~/.nuxt/components';
 
 <template>
-  <!-- <NavBar /> -->
   <v-main class="mainArea">
-    <KeywordForm />
+    <KeywordForm v-if="!summary" @summary="setSummary" />
+    <ResultModal v-else :summary="summary" @resetSummary="resetSummary" />
   </v-main>
 </template>
+
+<script setup>
+const summary = ref("");
+const resetSummary = () => (summary.value = "");
+const setSummary = (newSummary) => (summary.value = newSummary);
+</script>
 
 <style scoped>
 .mainArea {

@@ -8,11 +8,8 @@ interface DeepLResponse {
 }
 
 export default class DeepLTranslationServiceImpl implements TranslationService {
-  translateKeywords = async (keywords: string) => {
-    keywords.trim();
-    keywords = keywords.replace(/(\r|\n|\r)/gm, ", ");
-
-    console.log(keywords);
+  translateKeywords = async (keywords: string[]) => {
+    const keywordString = keywords.join(", ");
 
     const errorMsg: string = "Failed to translate keywords";
     const controller = new AbortController();
@@ -28,7 +25,7 @@ export default class DeepLTranslationServiceImpl implements TranslationService {
             Authorization: useRuntimeConfig().deepLApiKey,
           },
           body: new URLSearchParams({
-            text: keywords,
+            text: keywordString,
             target_lang: "EN-US",
             source_lang: "ET",
           }),

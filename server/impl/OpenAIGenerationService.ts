@@ -1,5 +1,5 @@
 import { generatePrompt } from "~~/utils/generatePrompt";
-import GenerationService from "./GenerationService";
+import GenerationService from "../service/GenerationService";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({

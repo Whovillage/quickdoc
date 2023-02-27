@@ -1,4 +1,5 @@
 <template>
+  <LoadingOverlay :loading="isLoading" />
   <v-form
     class="w-50 d-flex flex-column justify-center align-center rounded-lg"
     style="background-color: rgba(0, 0, 0, 0.2)"
@@ -22,8 +23,8 @@
     </v-container>
     <v-container class="w-100 px-4">
       <v-textarea
-        v-model="wordList"
-        @keydown.enter.prevent="addChip"
+        v-model="currentPhrase"
+        @keydown.enter.prevent="addPhrase"
         auto-grow
         rows="1"
         bg-color="rgba(220, 220, 220)"
@@ -35,13 +36,13 @@
     <v-container class="w-100 px-4 py-0">
       <v-chip
         closable
-        v-for="(chip, index) in chips"
+        v-for="(phrase, index) in phrases"
         :key="index"
         label
         outlined
         class="rounded-pill mr-2 mb-2"
         color="white"
-        >{{ chip }}</v-chip
+        >{{ phrase }}</v-chip
       >
     </v-container>
     <v-checkbox
@@ -52,32 +53,37 @@
     <v-btn
       color="#405c99"
       class="align-self-end text-white mb-4 mr-4"
-      @click="printer"
+      @click="generateSummary"
       >Genereeri Kokkuvõte
     </v-btn>
   </v-form>
 </template>
 
 <script setup>
-const wordList = ref("");
+const emit = defineEmits(["summary"]);
+
+const currentPhrase = ref("");
+const isLoading = ref(false);
 
 const inputLanguage = ref("Eesti");
 const outputLanguage = ref("Eesti");
-const disclaimer = ref(false);
-const chips = ref([]);
+const disclaimer = ref(true);
+const phrases = ref(["Mees", "70-aastane", "Kõhulahtisus"]);
 
-const printer = async () => {
+const generateSummary = async () => {
+  isLoading.value = true;
   const summary = await $fetch("/api/generateSummary", {
     method: "POST",
-    body: JSON.stringify(wordList.value),
+    body: JSON.stringify(phrases.value),
   });
-  wordList.value = summary.trim();
+  emit("summary", summary.trim());
+  isLoading.value = false;
 };
 
-const addChip = () => {
-  if (wordList.value === "") return;
-  chips.value.push(wordList.value);
-  wordList.value = "";
+const addPhrase = () => {
+  if (currentPhrase.value === "") return;
+  phrases.value.push(currentPhrase.value);
+  currentPhrase.value = "";
 };
 </script>
 
