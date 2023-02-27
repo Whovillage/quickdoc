@@ -1,5 +1,5 @@
-import DeepLTranslationService from "./DeepLTranslationService";
-import OpenAIGenerationService from "./OpenAIGenerationService";
+import DeepLTranslationService from "./impl/DeepLTranslationService";
+import OpenAIGenerationService from "./impl/OpenAIGenerationService";
 
 export default {
   translationService: new DeepLTranslationService(),

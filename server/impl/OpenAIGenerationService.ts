@@ -16,10 +16,10 @@ export default class OpenAIGenerationService implements GenerationService {
       const completion = await openai.createCompletion({
         model: "text-davinci-003",
         prompt: propmt,
-        temperature: 0.2,
+        temperature: 0.1,
         max_tokens: 400,
         frequency_penalty: 1.0,
-        presence_penalty: 0,
+        presence_penalty: -1.0,
       });
       let summary = completion.data.choices[0].text;
       if (summary) {

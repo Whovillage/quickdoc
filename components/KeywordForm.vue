@@ -54,7 +54,7 @@
       color="#405c99"
       class="align-self-end text-white mb-4 mr-4"
       @click="generateSummary"
-      >Genereeri Kokkuvõte
+      >Loo Kokkuvõte
     </v-btn>
   </v-form>
 </template>
@@ -74,7 +74,12 @@ const generateSummary = async () => {
   isLoading.value = true;
   const summary = await $fetch("/api/generateSummary", {
     method: "POST",
-    body: JSON.stringify(phrases.value),
+    body: JSON.stringify({
+      keywords: phrases.value,
+      useDisclaimers: disclaimer.value,
+      inputLanguage: inputLanguage.value,
+      outputLanguage: outputLanguage.value,
+    }),
   });
   emit("summary", summary.trim());
   isLoading.value = false;
