@@ -3,8 +3,7 @@ import memory from "../persistence/memory";
 export default defineEventHandler(async () => {
   try {
     console.log("Getting translations");
-    const allTranslations = JSON.stringify(memory);
-    return allTranslations;
+    return memory.translations;
   } catch (error) {
     console.log(error);
     throw createError({
