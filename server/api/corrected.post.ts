@@ -8,6 +8,12 @@ export default defineEventHandler(async (event) => {
     const index = memory.translations.findIndex((translation: any) => {
       return translation.id === id;
     });
+    if (index === -1) {
+      throw createError({
+        statusCode: 404,
+        message: "Failed to add corrected summary, id does not exist",
+      });
+    }
     memory.translations[index].correctedSummary = text;
     flushtoDB(memory);
     return "Successfully added corrected summary";

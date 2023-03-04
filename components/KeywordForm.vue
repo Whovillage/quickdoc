@@ -60,6 +60,10 @@
 </template>
 
 <script setup>
+const props = defineProps({
+  username: String,
+});
+
 const emit = defineEmits(["summary"]);
 
 const currentPhrase = ref("");
@@ -95,14 +99,18 @@ const generateSummary = async () => {
         useDisclaimers: disclaimer.value,
         inputLanguage: inputLanguage.value,
         outputLanguage: outputLanguage.value,
+        username: props.username,
       }),
     });
     emit("summary", summary);
     isLoading.value = false;
   } catch (e) {
-    console.log(e);
     isLoading.value = false;
-    alert("Viga kokkuvõtte loomisel. Proovi uuesti.");
+    if (e.message.includes("403")) {
+      alert("Vale kasutajanimi, värskenda lehte ja proovi uuesti");
+    } else {
+      alert("Serveripoolne viga, proovi uuesti");
+    }
   }
 };
 

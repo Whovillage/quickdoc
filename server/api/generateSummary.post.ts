@@ -8,8 +8,15 @@ import flushtoDB from "~~/utils/flushToDB";
 
 export default defineEventHandler(async (event) => {
   console.log("Generating summary");
-  const { keywords, useDisclaimers, inputLanguage, outputLanguage } =
+  const { keywords, useDisclaimers, inputLanguage, outputLanguage, username } =
     await readBody(event);
+
+  if (username !== "nobetohter") {
+    throw createError({
+      statusCode: 403,
+      message: "Failed to translate keywords",
+    });
+  }
 
   const translator: TranslationService = AppConfig.translationService;
   const generator: GenerationService = AppConfig.generationService;

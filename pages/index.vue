@@ -1,14 +1,29 @@
 <template>
   <v-main class="mainArea">
-    <KeywordForm v-if="!summary.text" @summary="setSummary" />
-    <ResultModal v-else :summary="summary" @resetSummary="resetSummary" />
+    <LoginForm v-if="!username" @saveUsername="setUsername" />
+    <KeywordForm
+      v-else-if="!summary.text"
+      :username="username"
+      @summary="setSummary"
+    />
+    <ResultModal
+      v-else
+      :summary="summary"
+      :username="username"
+      @resetSummary="resetSummary"
+    />
   </v-main>
 </template>
 
 <script setup>
+const username = ref("");
 const summary = ref({});
 const resetSummary = () => (summary.value = {});
 const setSummary = (newSummary) => (summary.value = newSummary);
+const setUsername = (newUsername) => {
+  username.value = newUsername;
+  console.log(username.value);
+};
 </script>
 
 <style scoped>

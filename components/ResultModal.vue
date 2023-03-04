@@ -28,6 +28,7 @@
 
 <script setup>
 const props = defineProps({
+  username: String,
   summary: { text: String, id: String },
 });
 
