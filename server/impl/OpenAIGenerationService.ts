@@ -13,15 +13,14 @@ export default class OpenAIGenerationService implements GenerationService {
     const propmt = generatePrompt(keywords);
 
     try {
-      const completion = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: propmt,
+      const completion = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: propmt }],
         temperature: 0.1,
         max_tokens: 400,
-        frequency_penalty: 1.0,
         presence_penalty: -1.0,
       });
-      let summary = completion.data.choices[0].text;
+      let summary = completion.data.choices[0].message?.content;
       if (summary) {
         return summary.trim();
       }

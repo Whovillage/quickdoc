@@ -68,21 +68,42 @@ const isLoading = ref(false);
 const inputLanguage = ref("Eesti");
 const outputLanguage = ref("Eesti");
 const disclaimer = ref(true);
-const phrases = ref(["Mees", "70-aastane", "Kõhulahtisus"]);
+const phrases = ref([
+  "Mees",
+  "70-aastane",
+  "Kõhulahtisus",
+  "kõhuvalu",
+  "2 nädalat",
+  "vasaklu alakõhus",
+  "hommikul hullem",
+  "võtnud paratsetamooli",
+  "ei ole oksendanud",
+  "pimesool op 10 aastat tagasi",
+  "varem sellist valu pole olnud",
+  "alkoholi ei tarbi",
+  "suitsetaja",
+  "võtnud ibuprofeeni",
+]);
 
 const generateSummary = async () => {
   isLoading.value = true;
-  const summary = await $fetch("/api/generateSummary", {
-    method: "POST",
-    body: JSON.stringify({
-      keywords: phrases.value,
-      useDisclaimers: disclaimer.value,
-      inputLanguage: inputLanguage.value,
-      outputLanguage: outputLanguage.value,
-    }),
-  });
-  emit("summary", summary.trim());
-  isLoading.value = false;
+  try {
+    const summary = await $fetch("/api/generateSummary", {
+      method: "POST",
+      body: JSON.stringify({
+        keywords: phrases.value,
+        useDisclaimers: disclaimer.value,
+        inputLanguage: inputLanguage.value,
+        outputLanguage: outputLanguage.value,
+      }),
+    });
+    emit("summary", summary.trim());
+    isLoading.value = false;
+  } catch (e) {
+    console.log(e);
+    isLoading.value = false;
+    alert("Viga kokkuvõtte loomisel. Proovi uuesti.");
+  }
 };
 
 const addPhrase = () => {

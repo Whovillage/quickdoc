@@ -5,8 +5,9 @@ export const generatePrompt = (keywords: string) => {
   Alternate between pronouns and "the patient" to refer to the patient.
   Group and reorder keywords where they belong together, for example different drugs the patient is taking or different symptoms.
   Reword the keywords when necessary for better grammatical style and correctness.
-  Do not add your own keywords.
+  Do not add any keywords.
   Do not add any additional information.
+  Do not add any symptoms.
   Do not talk about further treatment or future plans.
   Do not use the word "reported" or "report".
   

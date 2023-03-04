@@ -2,6 +2,9 @@ import TranslationService from "../service/TranslationService";
 import AppConfig from "../AppConfig";
 import GenerationService from "../service/GenerationService";
 import disclaimers from "../textAssets/disclaimers";
+import crypto from "crypto";
+import memory from "../persistence/memory";
+import flushtoFile from "~~/utils/flushToDB";
 
 export default defineEventHandler(async (event) => {
   console.log("Generating summary");
@@ -22,7 +25,20 @@ export default defineEventHandler(async (event) => {
       "FI",
       "ET"
     );
-    if (useDisclaimers) finalSummary += `\n ${disclaimers.return}`;
+
+    const newEntry = {
+      id: crypto.randomBytes(16).toString("hex"),
+      keywords: keywords,
+      translation: translation,
+      englishSummary: englishSummary,
+      finnishSummary: finnishSummary,
+      finalSummary: finalSummary,
+    };
+
+    memory.translations.push(newEntry);
+    flushtoFile(memory);
+
+    if (useDisclaimers) finalSummary += `\n${disclaimers.return}`;
     return finalSummary;
   } catch (error) {
     console.log(error);
