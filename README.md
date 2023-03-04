@@ -1,3 +1,3 @@
 ### Quickdoc
 
-Amedical assistive app for doctors@
+A medical assistive app for doctors.
