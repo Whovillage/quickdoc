@@ -1,13 +1,13 @@
 <template>
   <v-main class="mainArea">
-    <KeywordForm v-if="!summary" @summary="setSummary" />
+    <KeywordForm v-if="!summary.text" @summary="setSummary" />
     <ResultModal v-else :summary="summary" @resetSummary="resetSummary" />
   </v-main>
 </template>
 
 <script setup>
-const summary = ref("");
-const resetSummary = () => (summary.value = "");
+const summary = ref({});
+const resetSummary = () => (summary.value = {});
 const setSummary = (newSummary) => (summary.value = newSummary);
 </script>
 

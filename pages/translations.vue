@@ -13,6 +13,8 @@
       <div>{{ t.finnishSummary }}</div>
       <div>--------------------------------------------</div>
       <div>{{ t.finalSummary }}</div>
+      <div>--------------------------------------------</div>
+      <div>{{ t.correctedSummary }}</div>
       <div>============================================</div>
       <br />
     </div>
@@ -27,6 +29,7 @@ interface Translation {
   englishSummary: string;
   finnishSummary: string;
   finalSummary: string;
+  correctedSummary?: string;
 }
 
 const translations = ref([] as Translation[]);

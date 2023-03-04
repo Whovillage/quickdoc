@@ -4,7 +4,7 @@ import GenerationService from "../service/GenerationService";
 import disclaimers from "../textAssets/disclaimers";
 import crypto from "crypto";
 import memory from "../persistence/memory";
-import flushtoFile from "~~/utils/flushToDB";
+import flushtoDB from "~~/utils/flushToDB";
 
 export default defineEventHandler(async (event) => {
   console.log("Generating summary");
@@ -36,10 +36,10 @@ export default defineEventHandler(async (event) => {
     };
 
     memory.translations.push(newEntry);
-    flushtoFile(memory);
+    flushtoDB(memory);
 
     if (useDisclaimers) finalSummary += `\n${disclaimers.return}`;
-    return finalSummary;
+    return { id: newEntry.id, text: finalSummary };
   } catch (error) {
     console.log(error);
     throw createError({

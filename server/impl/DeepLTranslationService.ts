@@ -1,4 +1,4 @@
-import TranslationService from "./TranslationService";
+import TranslationService from "../service/TranslationService";
 
 interface DeepLResponse {
   translations: {

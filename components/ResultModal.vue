@@ -28,10 +28,11 @@
 
 <script setup>
 const props = defineProps({
-  summary: String,
+  summary: { text: String, id: String },
 });
 
-const editedSummary = ref(props.summary);
+const editedSummary = ref(props.summary.text);
+const id = ref(props.summary.id);
 const copyBtnColor = ref("#405c99");
 const copyBtnText = ref("Kopeeri");
 const copyBtnIcon = ref("mdi-content-copy");
@@ -49,8 +50,24 @@ const copy = async () => {
       copyBtnText.value = "Kopeeri";
       copyBtnIcon.value = "mdi-content-copy";
     }, 2000);
+
+    await saveCorrected();
   } catch ($e) {
     alert("Cannot copy: ", $e);
+  }
+};
+
+const saveCorrected = async () => {
+  try {
+    await $fetch("/api/corrected", {
+      method: "POST",
+      body: JSON.stringify({
+        id: id.value,
+        text: editedSummary.value,
+      }),
+    });
+  } catch ($e) {
+    throw new Error($e);
   }
 };
 </script>

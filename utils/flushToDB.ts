@@ -1,6 +1,6 @@
 import { writeFileSync } from "fs";
 
-const flushtoFile = async (data: any) => {
+const flushtoDB = async (data: any) => {
   writeFileSync(
     "./server/persistence/db.json",
     JSON.stringify(data, null, 2),
@@ -8,4 +8,4 @@ const flushtoFile = async (data: any) => {
   );
 };
 
-export default flushtoFile;
+export default flushtoDB;

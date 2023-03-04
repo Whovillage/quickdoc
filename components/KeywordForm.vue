@@ -97,7 +97,7 @@ const generateSummary = async () => {
         outputLanguage: outputLanguage.value,
       }),
     });
-    emit("summary", summary.trim());
+    emit("summary", summary);
     isLoading.value = false;
   } catch (e) {
     console.log(e);
