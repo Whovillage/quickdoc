@@ -9,7 +9,7 @@ interface DeepLResponse {
 
 export default class DeepLTranslationServiceImpl implements TranslationService {
   translateKeywords = async (keywords: string[]) => {
-    const keywordString = keywords.join(", ");
+    const keywordString = keywords.join("; ");
 
     const errorMsg: string = "Failed to translate keywords";
     const controller = new AbortController();

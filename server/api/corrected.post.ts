@@ -1,21 +1,24 @@
-import flushtoDB from "~~/utils/flushToDB";
-import memory from "../persistence/memory";
+import AppConfig from "../AppConfig";
 
 export default defineEventHandler(async (event) => {
   try {
     console.log("Adding corrected summary");
+    const db = AppConfig.db;
     const { id, text } = await readBody(event);
-    const index = memory.translations.findIndex((translation: any) => {
-      return translation.id === id;
-    });
-    if (index === -1) {
+
+    const { error } = await db
+      .from("translations")
+      .update([{ corrected_summary: text }])
+      .eq("string_id", id);
+
+    if (error) {
+      console.log("Database error", error);
       throw createError({
-        statusCode: 404,
-        message: "Failed to add corrected summary, id does not exist",
+        statusCode: 500,
+        message: "Failed to add corrected summary",
       });
     }
-    memory.translations[index].correctedSummary = text;
-    flushtoDB(memory);
+    console.log("Successfully added corrected summary for entry: ", id);
     return "Successfully added corrected summary";
   } catch (error) {
     console.log(error);

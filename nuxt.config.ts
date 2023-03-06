@@ -12,6 +12,7 @@ export default defineNuxtConfig({
       "process.env.DEBUG": false,
     },
   },
+  modules: ["@nuxtjs/supabase"],
   runtimeConfig: {
     deepLApiKey: "DeepL-Auth-Key e7e7721e-11b7-9253-efb4-ef97a54cbef3:fx",
     openAIApiKey: "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",

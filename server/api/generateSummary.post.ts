@@ -3,23 +3,24 @@ import AppConfig from "../AppConfig";
 import GenerationService from "../service/GenerationService";
 import disclaimers from "../textAssets/disclaimers";
 import crypto from "crypto";
-import memory from "../persistence/memory";
-import flushtoDB from "~~/utils/flushToDB";
 
 export default defineEventHandler(async (event) => {
   console.log("Generating summary");
+  const errorMsg = "Failed to generate summary";
   const { keywords, useDisclaimers, inputLanguage, outputLanguage, username } =
     await readBody(event);
 
   if (username !== "nobetohter") {
     throw createError({
       statusCode: 403,
-      message: "Failed to translate keywords",
+      message: errorMsg,
     });
   }
 
   const translator: TranslationService = AppConfig.translationService;
   const generator: GenerationService = AppConfig.generationService;
+  const db = AppConfig.db;
+
   try {
     const translation = await translator.translateKeywords(keywords);
     console.log("DeepL:", translation);
@@ -27,31 +28,42 @@ export default defineEventHandler(async (event) => {
     console.log(englishSummary);
     const finnishSummary = await translator.translateSummary(englishSummary);
     console.log(finnishSummary);
-    let finalSummary = await translator.translateSummary(
+    let estonianSummary = await translator.translateSummary(
       finnishSummary,
       "FI",
       "ET"
     );
 
-    const newEntry = {
-      id: crypto.randomBytes(16).toString("hex"),
-      keywords: keywords,
-      translation: translation,
-      englishSummary: englishSummary,
-      finnishSummary: finnishSummary,
-      finalSummary: finalSummary,
-    };
+    const id = crypto.randomBytes(16).toString("hex");
 
-    memory.translations.push(newEntry);
-    flushtoDB(memory);
+    console.log("Võtmesõnad: ", keywords.join("; "));
 
-    if (useDisclaimers) finalSummary += `\n${disclaimers.return}`;
-    return { id: newEntry.id, text: finalSummary };
+    const { error } = await db.from("translations").insert([
+      {
+        string_id: id,
+        keywords: keywords.join(";"),
+        translation: translation,
+        english_summary: englishSummary,
+        finnish_summary: finnishSummary,
+        estonian_summary: estonianSummary,
+      },
+    ]);
+
+    if (error) {
+      console.log("Database error", error);
+      throw createError({
+        statusCode: 500,
+        message: errorMsg,
+      });
+    }
+
+    if (useDisclaimers) estonianSummary += `\n${disclaimers.return}`;
+    return { id: id, text: estonianSummary };
   } catch (error) {
     console.log(error);
     throw createError({
       statusCode: 500,
-      message: "Failed to translate keywords",
+      message: errorMsg,
     });
   }
 });
